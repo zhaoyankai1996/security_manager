@@ -1,0 +1,17 @@
+server:
+  port: 80
+
+spring:
+  datasource:
+    url: ${JDBC_URL}
+    username: ${JDBC_USER}
+    password: ${JDBC_PASSWORD}
+  redis:
+    password: ${REDIS_PWD}
+    timeout: ${REDIS_TIME_OUT}
+    cluster:
+      nodes: ${REDIS_NODES}
+      max-redirects: ${REDIS_MAX_REDIRECTS:3}
+
+host:
+  oss: http://oss-green-channel.labor/oss

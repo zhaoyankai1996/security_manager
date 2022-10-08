@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: ${JDBC_URL:jdbc:mysql://10.110.120.107:13306/labor_contest?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&useOldAliasMetadataBehavior=true&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8}
+    username: ${JDBC_USER:labor}
+    password: ${JDBC_PASSWORD:labor654321Bb!}
+  redis:
+    password: ${REDIS_PWD}
+    timeout: ${REDIS_TIME_OUT:20000}
+    cluster:
+      nodes: ${REDIS_NODES:10.110.120.107:7001,10.110.120.107:7002,10.110.120.107:7003,10.110.120.107:7004,10.110.120.107:7005,10.110.120.107:7006}
+      max-redirects: ${REDIS_MAX_REDIRECTS:3}
+
+host:
+  oss: http://117.73.3.171:88/oss
+

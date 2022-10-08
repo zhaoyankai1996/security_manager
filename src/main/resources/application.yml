@@ -1,0 +1,118 @@
+server:
+  port: 8100
+  servlet:
+    context-path: /contest
+    session:
+      store-dir: redis
+  tomcat:
+    uri-encoding: UTF-8
+    max-connections: ${SERVER_MAX_CONNECTIONS:100000}
+    threads:
+      max: ${SERVER_MAX_THREADS:5000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: [ health ]
+  endpoint:
+    metrics:
+      enabled: false
+    health:
+      show-details: never
+  health:
+    db:
+      enabled: false
+    redis:
+      enabled: false
+    diskspace:
+      enabled: false
+  metrics:
+    export:
+      atlas:
+        enabled: false
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  profiles:
+    active: ${PROFILES_ACTIVE:test}
+  datasource:
+    driverClassName: org.postgresql.Driver
+    type: com.zaxxer.hikari.HikariDataSource
+    hikari:
+      minimum-idle: ${DS_MIN_IDLE:10}
+      maximum-pool-size: ${DS_MAX_ACTIVE:200}
+      auto-commit: true
+      idle-timeout: 30000
+      pool-name: DatebookHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  redis:
+    lettuce:
+      pool:
+        # 连接池最大连接数（使用负值表示没有限制） 默认 8
+        max-active: ${REDIS_MAX_ACTIVE:200}
+        # 连接池最大阻塞等待时间（使用负值表示没有限制） 默认 -1
+        max-wait: ${REDIS_MAX_WAIT:10000}
+        # 连接池中的最大空闲连接 默认 8
+        max-idle: ${REDIS_MAX_IDLE:10}
+        # 连接池中的最小空闲连接 默认 0
+        min-idle: ${REDIS_MIN_IDLE:10}
+      cluster:
+        refresh:
+          # 开启刷新拓扑
+          adaptive: true
+          # 刷新拓扑周期，单位毫秒
+          period: ${REDIS_REFRESH_PERIOD:20000}
+
+# 数据库及分页配置
+mybatis:
+  typeAliasesPackage: com.inspur.**.data
+  mapperLocations: classpath*:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+pagehelper:
+  helper-dialect: postgresql
+  support-methods-arguments: true
+  reasonable: true
+  params: "pageNum=pageNum;pageSize=pageSize;"
+
+# 雪花id配置
+inspur:
+  uid:
+    snowflake:
+      # 35位可以支撑 1000年， 一般配置为 32即可
+      timeBits: 34
+      # 16位才可以容器化部署
+      workerBits: 16
+      # 每秒产生的数据量
+      seqBits: 5
+      # 可以配置为项目上线日期，一旦生效不要修改
+      epochStr: 2020-04-04
+      # 默认采用项目的端口号
+      workerPort: ${server.port}
+      # 校验位的大小， 管理后台：建议 8以上， 高并发场景，可以设置为：0
+      validBits: 8
+
+oss:
+  #文件组
+  fileGroup: ${FILE_GROUP:defautgroup}
+  # 上传文件并返回文件相对路径
+  uploadFileUrl: ${host.oss}/file/full/upload
+  # 文件下载的host地址
+  downloadUrl: ${BJGH_URL:http://117.73.3.171:88}/oss/download/path/
+
+
+logging:
+  pattern:
+    console: "%d{yyyy/MM/dd-HH:mm:ss} [%thread] %-5level %logger- %msg%n"
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}
+    com.inspur: ${LOG_LEVEL:DEBUG}
+
